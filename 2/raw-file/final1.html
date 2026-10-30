@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project #2 – UML Diagrams | Three-Tier Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #1e2a3e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 40px;
+        }
+
+        /* main container - extra wide to make images huge */
+        .main-container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* ----- HEADER (exactly same as previous project) ----- */
+        .project-header {
+            background: linear-gradient(135deg, #1e466e, #2c7da0);
+            color: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+            padding: 2.5rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .project-header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .project-subtitle {
+            background-color: #f4b942;
+            color: #1e466e;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 1rem 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .lesson-info {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .team-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            min-width: 220px;
+            transition: transform 0.2s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .team-member .name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .team-member .id {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: #d1e7dd;
+        }
+
+        /* ----- LAYER SECTION – each in its own row, huge & spacious ----- */
+        .layer-section {
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            margin-bottom: 3rem;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .layer-section:hover {
+            box-shadow: 0 28px 40px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .layer-title {
+            background: #1e466e;
+            padding: 1.2rem 2rem;
+            color: white;
+            border-bottom: 4px solid #f4b942;
+        }
+
+        .layer-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .layer-icon {
+            background: #f4b942;
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 1.8rem;
+            color: #1e466e;
+            font-weight: bold;
+        }
+
+        .image-container {
+            padding: 2.5rem;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        /* The actual image wrapper - makes images take full width and responsive but HUGE */
+        .uml-image-wrapper {
+            width: 100%;
+            text-align: center;
+            background: #fefefe;
+            border-radius: 20px;
+        }
+
+        .uml-image-wrapper a {
+            display: block;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .uml-image-wrapper img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .uml-image-wrapper img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+        }
+
+        /* horizontal rule style (clean line between sections) */
+        .section-divider {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #cbd5e1, #f4b942, #cbd5e1);
+            margin: 1rem 0 2rem 0;
+            border-radius: 4px;
+        }
+
+        /* fallback text if image missing */
+        .fallback-note {
+            font-size: 1.2rem;
+            color: #5a6e7c;
+            background: #f1f5f9;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px dashed #cbd5e6;
+        }
+
+        /* responsive adjustments: make images even bigger on large screens */
+        @media (min-width: 1600px) {
+            .image-container {
+                padding: 3rem;
+                min-height: 650px;
+            }
+            .layer-title h2 {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .image-container {
+                padding: 1.2rem;
+            }
+            .layer-title h2 {
+                font-size: 1.6rem;
+            }
+            .project-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    
+    <!-- ========== HEADER (exactly as your previous project) ========== -->
+    <div class="project-header">
+        <h1>Course Registration System - Domain Driven </h1>
+        <div class="project-subtitle">Second Project</div>
+        
+        <div class="lesson-info">
+            <div><strong>Lesson:</strong> Systems Analysis and Design</div>
+            <div><strong>Date:</strong> 25 Ordibehesht 1405</div>
+        </div>
+
+        <div class="team-container">
+            <div class="team-member">
+                <div class="name">Rayhaneh Einollahi</div>
+                <div class="id">ID: 810102608</div>
+            </div>
+            <div class="team-member">
+                <div class="name">Bahareh Einollahi</div>
+                <div class="id">ID: 810102482</div>
+            </div>
+            <div class="team-member">
+                <div class="name">Mahdis Mirzaei</div>
+                <div class="id">ID: 810102550</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PRESENTATION LAYER (huge image, full row) ========== -->
+    <div class="layer-section">
+        <div class="layer-title">
+            <h2>
+                <span class="layer-icon">🖥️</span> 
+                Presentation Layer
+            </h2>
+        </div>
+        <div class="image-container">
+            <div class="uml-image-wrapper">
+                <!-- LINK: put your presentation layer image file path in href and src -->
+                <a href="#" id="presentation-link" target="_blank">
+                    <img src="data.png" alt="Presentation Layer UML Diagram (UI / Components)" id="presentation-img"
+                         onerror="this.onerror=null; this.parentElement.parentElement.innerHTML = '<div class=\'fallback-note\' style=\'padding:3rem;text-align:center\'><span style=\'font-size:2rem;\'>🖼️</span><br><strong>Presentation UML</strong><br>Click to set your image<br><small style=\'color:#2c7da0\'>Replace src &amp; href with your diagram file</small></div>';">
+                </a>
+                <!-- default helper text (will disappear when image loads) -->
+                <div id="pres-fallback-helper" style="text-align:center; margin-top:12px; font-size:0.85rem; color:#5a6e7c;">
+                    ⬆️ Replace 'src' attribute with your Presentation UML image path
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- horizontal rule line (clean separation) -->
+    <div class="section-divider"></div>
+
+    <!-- ========== DOMAIN LAYER (huge image, full row) ========== -->
+    <div class="layer-section">
+        <div class="layer-title">
+            <h2>
+                <span class="layer-icon">🏛️</span> 
+                Domain Layer
+            </h2>
+        </div>
+        <div class="image-container">
+            <div class="uml-image-wrapper">
+                <a href="#" id="domain-link" target="_blank">
+                    <img src="domain.png" alt="Domain Layer UML Diagram (Business Entities)" id="domain-img"
+                         onerror="this.onerror=null; this.parentElement.parentElement.innerHTML = '<div class=\'fallback-note\' style=\'padding:3rem;text-align:center\'><span style=\'font-size:2rem;\'>📐</span><br><strong>Domain UML</strong><br>Click to add your Domain Model image<br><small style=\'color:#2c7da0\'>Update src &amp; href attributes</small></div>';">
+                </a>
+                <div id="domain-fallback-helper" style="text-align:center; margin-top:12px; font-size:0.85rem; color:#5a6e7c;">
+                    ⬆️ Replace 'src' with your Domain UML image file
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- horizontal rule line -->
+    <div class="section-divider"></div>
+
+    <!-- ========== DATA LAYER (huge image, full row) ========== -->
+    <div class="layer-section">
+        <div class="layer-title">
+            <h2>
+                <span class="layer-icon">🗄️</span> 
+                Data Layer
+            </h2>
+        </div>
+        <div class="image-container">
+            <div class="uml-image-wrapper">
+                <a href="#" id="data-link" target="_blank">
+                    <img src="pres.png" alt="Data Layer UML Diagram (Persistence, DAO, Schema)" id="data-img"
+                         onerror="this.onerror=null; this.parentElement.parentElement.innerHTML = '<div class=\'fallback-note\' style=\'padding:3rem;text-align:center\'><span style=\'font-size:2rem;\'>🗃️</span><br><strong>Data Layer UML</strong><br>Click to set your Data diagram<br><small style=\'color:#2c7da0\'>Update src &amp; href with your image file</small></div>';">
+                </a>
+                <div id="data-fallback-helper" style="text-align:center; margin-top:12px; font-size:0.85rem; color:#5a6e7c;">
+                    ⬆️ Replace 'src' attribute with your Data Layer UML image
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- no footer, no extra text - only header and three UML rows -->
+</div>
+
+<!-- ultra simple helper to let you set images from console or manually -->
+<script>
+    (function() {
+        // This script does NOT add extra content. It only provides a handy console guide.
+        // You can replace the image sources and links directly in the HTML.
+        // For your convenience: the IDs for each image and link are:
+        // Presentation: img id="presentation-img", link id="presentation-link"
+        // Domain: img id="domain-img", link id="domain-link"
+        // Data: img id="data-img", link id="data-link"
+        
+        console.log("✅ UML Report ready — each layer in a massive row.");
+        console.log("📌 To insert your UML images, replace the 'src' attribute for each img tag:");
+        console.log("   - Presentation: #presentation-img");
+        console.log("   - Domain: #domain-img");
+        console.log("   - Data: #data-img");
+        console.log("🔗 Also replace the 'href' inside each <a> tag to link your image files.");
+        console.log("💡 Example: document.getElementById('domain-img').src = 'domain.png';");
+        console.log("   document.getElementById('domain-link').href = 'domain.png';");
+        
+        // Optional: clear the helper text when image loads (makes it cleaner)
+        const presentationImg = document.getElementById('presentation-img');
+        const domainImg = document.getElementById('domain-img');
+        const dataImg = document.getElementById('data-img');
+        
+        function clearHelper(imgElement, helperId) {
+            if (imgElement && imgElement.complete && imgElement.naturalWidth !== 0) {
+                let helperDiv = document.getElementById(helperId);
+                if (helperDiv) helperDiv.style.display = 'none';
+            } else if (imgElement) {
+                imgElement.addEventListener('load', function() {
+                    let helperDiv = document.getElementById(helperId);
+                    if (helperDiv) helperDiv.style.display = 'none';
+                });
+            }
+        }
+        
+        clearHelper(presentationImg, 'pres-fallback-helper');
+        clearHelper(domainImg, 'domain-fallback-helper');
+        clearHelper(dataImg, 'data-fallback-helper');
+    })();
+</script>
+</body>
+</html>

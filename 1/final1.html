@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Registration – Requirements & Domain Model</title>
+    <!-- Mermaid CDN -->
+    <script src="mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base', 
+            flowchart: { useMaxWidth: false, htmlLabels: true },
+            themeVariables: {
+                primaryColor: '#f0f4f8',
+                primaryTextColor: '#2c3e50',
+                primaryBorderColor: '#aab7c4',
+                lineColor: '#34495e',
+                secondaryColor: '#d1e7dd',
+                tertiaryColor: '#fff',
+            }
+        });
+    </script>
+    <style>
+        /* ----- base styles ----- */
+        body {
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* main container for consistent width */
+        .main-container {
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        /* ----- Project Header Styling ----- */
+        .project-header {
+            background: linear-gradient(135deg, #1e466e, #2c7da0);
+            color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            padding: 2.5rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .project-header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .project-subtitle {
+            background-color: #f4b942;
+            color: #1e466e;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 1rem 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .lesson-info {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .team-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            min-width: 220px;
+            transition: transform 0.2s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .team-member .name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .team-member .id {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: #d1e7dd;
+        }
+
+        /* ----- Part 1 – Requirements & Use Cases styling ----- */
+        .requirements-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            padding: 1.8rem 2.2rem;
+            margin-bottom: 3rem;
+            transition: all 0.2s;
+        }
+
+        .requirements-card h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e466e;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            border-left: 6px solid #2c7da0;
+            padding-left: 1rem;
+        }
+
+        .requirements-card h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #1f5068;
+            margin-top: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .requirements-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        .use-case-title {
+            background: #f8fafc;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            margin: 1rem 0 1.2rem 0;
+            border-left: 5px solid #2c7da0;
+        }
+
+        .use-case-title p {
+            margin: 0.25rem 0;
+            font-size: 1rem;
+        }
+
+        .scenario-steps {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 1rem 0 1.2rem 0;
+        }
+
+        .scenario-steps li {
+            background: #fefefe;
+            margin-bottom: 0.6rem;
+            padding: 0.5rem 0 0.5rem 1.8rem;
+            position: relative;
+            font-size: 0.98rem;
+            line-height: 1.45;
+            border-left: 2px solid #cbd5e1;
+        }
+
+        .scenario-steps li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            background: #e9ecef;
+            font-weight: 600;
+            font-size: 0.8rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e466e;
+        }
+
+        .scenario-steps {
+            counter-reset: step-counter;
+        }
+
+        .alt-scenario {
+            background: #fef9e6;
+            border-left: 4px solid #f4b942;
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 14px;
+        }
+
+        .alt-scenario strong {
+            color: #b45309;
+        }
+
+        .alt-scenario p {
+            margin: 0.4rem 0;
+        }
+
+        .inline-code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: #edf2f7;
+            padding: 0.15rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, #cbd5e1, transparent);
+        }
+
+        /* diagram styles */
+        .diagram-wrapper {
+            background-color: #fff;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .domain-heading {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            font-size: 1.9rem;
+        }
+
+        /* responsive touch */
+        @media (max-width: 750px) {
+            body {
+                padding: 20px;
+            }
+            .requirements-card, .diagram-wrapper, .project-header {
+                padding: 1.2rem;
+            }
+            .project-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    
+    <!-- ========== HEADER: PROJECT INFO & TEAM ========== -->
+    <div class="project-header">
+        <h1>Course Registration System</h1>
+        <div class="project-subtitle">First Project</div>
+        
+        <!-- Added Lesson and Date Info -->
+        <div class="lesson-info">
+            <div><strong>Lesson:</strong> Systems Analysis and Design  </div>
+            <div><strong>Date:</strong> 6 Ordibehesht 1405</div>
+        </div>
+
+        <div class="team-container">
+            <div class="team-member">
+                <div class="name">Rayhaneh Einollahi</div>
+                <div class="id">ID: 810102608</div>
+            </div>
+            <div class="team-member">
+                <div class="name">Bahareh Einollahi</div>
+                <div class="id">ID: 810102482</div>
+            </div>
+            <div class="team-member">
+                <div class="name">Mahdis Mirzaei</div>
+                <div class="id">ID: 810102550</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PART 1 – REQUIREMENTS DESCRIPTION WITH USE CASES ========== -->
+    <div class="requirements-card">
+        <h1>Part 1 – Requirements Description with Use Cases</h1>
+
+        <!-- Use Case Section -->
+        <div class="use-case-title">
+            <p><strong>Use Case:</strong> Course Registration</p>
+            <p><strong>Primary Actor:</strong> Student</p>
+        </div>
+
+        <h2>Main Scenario</h2>
+        <ol class="scenario-steps">
+            <li>Student accesses the educational system and initiates the course registration process.</li>
+            <li>System retrieves and displays the registration calendar and the list of available course offerings for the current semester.</li>
+            <li>Student selects a specific course offering to add to their schedule.</li>
+            <li>System verifies that the requested course offering has available capacity.</li>
+            <li>System checks that the student has passed all prerequisite courses required for the selected course.</li>
+            <li>System checks that the student meets corequisite requirements for the selected course.</li>
+            <li>System checks that the selected course offering and its final exam do not have time conflicts with the student's existing schedule.</li>
+            <li>System verifies that the student has not previously passed this course.</li>
+            <li>System checks that adding this course does not cause the student to violate minimum or maximum credit limits based on their GPA.</li>
+            <li>System adds the course offering to the student's schedule and updates the credit total.</li>
+            <li>Student confirms and finalizes the semester's course registration.</li>
+            <li>System saves the registration details and displays the finalized schedule to the student.</li>
+        </ol>
+
+        <h2>Alternative Scenarios</h2>
+
+        <div class="alt-scenario">
+            <strong>In step 4 (course capacity full):</strong>
+            <p>1. System displays an error message stating that the course capacity has been reached.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+
+        <div class="alt-scenario">
+            <strong>In step 5 (missing prerequisites):</strong>
+            <p>1. System displays an error message identifying the missing prerequisites.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+
+        <div class="alt-scenario">
+            <strong>In step 6 (corequisite conditions not met):</strong>
+            <p>1. System displays an error message stating that the required corequisites are not included.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+
+        <div class="alt-scenario">
+            <strong>In step 7 (time conflict with course offering or exam):</strong>
+            <p>1. System displays an error message specifying the exact schedule conflict.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+
+        <div class="alt-scenario">
+            <strong>In step 8 (course already passed in previous semester):</strong>
+            <p>1. System displays an error message indicating the course cannot be retaken because it has already been passed.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+
+        <div class="alt-scenario">
+            <strong>In step 9 (credit limit violation based on GPA):</strong>
+            <p>1. System displays an error message specifying the credit limit violation.</p>
+            <p>2. At the end, return to step 2 of the main scenario.</p>
+        </div>
+        <hr />
+    </div>
+
+    <!-- ========== PART 2 – DOMAIN MODEL DIAGRAM ========== -->
+    <h1 class="domain-heading">Course Registration Domain Model</h1>
+    <div class="diagram-wrapper">
+        <div class="mermaid">
+classDiagram
+    %% Professional styling and better separation to avoid line stacking
+
+    class Student {
+    }
+    class Course {
+    }
+    class CourseOffering {
+    }
+    class SemesterPlan {
+    }
+    class RegistrationCalendar {
+    }
+    class TranscriptRecord {
+    }
+    class TimeSlot {
+    }
+    class GpaCreditRule {
+    }
+
+    %% Associations with names and multiplicities
+    Student "1" -- "*" CourseOffering : registers for
+    Student "1" -- "*" TranscriptRecord : possesses
+    TranscriptRecord "*" -- "1" Course : references
+    Student "*" -- "1" GpaCreditRule : bound by
+    
+    CourseOffering "*" -- "1" Course : instantiates
+    CourseOffering "*" -- "1" SemesterPlan : belongs to
+    SemesterPlan "1" -- "1" RegistrationCalendar : follows
+    
+    %% Fixed non-overlapping self-associations for Course
+    %% We use specific line types to force Mermaid to separate them
+    Course "0..*" -- "0..*" Course : requires prerequisite requires corequisite
+
+    
+    CourseOffering "*" -- "*" TimeSlot : holds classes at
+    CourseOffering "*" -- "1" TimeSlot : schedules exam at
+
+    %% Define some node styling for a more beautiful look
+    %% (This requires the "base" theme and mermaid v10+)
+    style Student fill:#e3f2fd,stroke:#90caf9,stroke-width:2px,rx:10,ry:10
+    style Course fill:#e8f5e9,stroke:#a5d6a7,stroke-width:2px,rx:10,ry:10
+    style CourseOffering fill:#fff3e0,stroke:#ffcc80,stroke-width:2px,rx:10,ry:10
+    style SemesterPlan fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px,rx:10,ry:10
+    style RegistrationCalendar fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px,rx:10,ry:10
+    style TranscriptRecord fill:#e3f2fd,stroke:#90caf9,stroke-width:2px,rx:10,ry:10
+    style TimeSlot fill:#ffebee,stroke:#ef9a9a,stroke-width:2px,rx:10,ry:10
+    style GpaCreditRule fill:#e0f2f1,stroke:#80cbc4,stroke-width:2px,rx:10,ry:10
+        </div>
+    </div>
+</div>
+</body>
+</html>

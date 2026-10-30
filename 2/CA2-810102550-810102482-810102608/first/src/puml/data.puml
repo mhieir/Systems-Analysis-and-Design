@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' --- External Dependencies (Stubs) ---
+abstract class "domain.Entity" as Entity
+class "domain.Student" as Student
+class "domain.Course" as Course
+class "domain.CourseGroup" as CourseGroup
+
+' --- Data Access Layer ---
+abstract class BaseRepository<T> {
+    # items: Map<Long, T>
+    + save(item: T)
+    + findById(id: Long): T
+    + findAll(): List<T>
+}
+
+class StudentRepository {
+}
+
+class CourseRepository {
+}
+
+class CourseGroupRepository {
+}
+
+' --- Relationships ---
+BaseRepository <|-- StudentRepository : <Student>
+BaseRepository <|-- CourseRepository : <Course>
+BaseRepository <|-- CourseGroupRepository : <CourseGroup>
+
+BaseRepository ..> Entity : stores
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' --- External Dependencies (Stubs) ---
+interface "domain.RegistrationRequirement" as RegistrationRequirement
+class "data.StudentRepository" as StudentRepository
+class "data.CourseRepository" as CourseRepository
+class "data.CourseGroupRepository" as CourseGroupRepository
+
+' --- Presentation Layer ---
+class CourseGroupView <<DTO>> {
+    + groupId: Long
+    + courseTitle: String
+    + professorName: String
+    + availableSeats: Int
+    + classSchedule: String
+}
+
+class Response<T> <<DTO>> {
+    + success: Boolean
+    + message: String
+    + data: T
+}
+
+class RegistrationController {
+    + getAvailableGroups(): Response<List<CourseGroupView>>
+    + takeGroup(studentId: Long, groupId: Long): Response<CourseGroupView>
+    + dropGroup(studentId: Long, groupId: Long): Response<String>
+    + joinWaitlist(studentId: Long, groupId: Long): Response<String>
+}
+
+' --- Relationships ---
+RegistrationController ..> CourseGroupView : creates
+RegistrationController ..> Response : returns
+
+RegistrationController --> StudentRepository : uses
+RegistrationController --> CourseRepository : uses
+RegistrationController --> CourseGroupRepository : uses
+RegistrationController ..> RegistrationRequirement : enforces
+
+@enduml

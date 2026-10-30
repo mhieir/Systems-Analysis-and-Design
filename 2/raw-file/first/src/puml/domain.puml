@@ -1,0 +1,106 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class Entity {
+    - id: Long
+    + id(): Long
+    + hasId(): Boolean
+    + setId(newId: Long)
+}
+
+enum WeekDays {
+    Saturday
+    Sunday
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+}
+
+enum RegistrationStatus {
+    REGISTERED
+    WAITLISTED
+}
+
+class TimeSlot <<Value Object>> {
+    + dayOfWeek: WeekDays
+    + startTime: String
+    + endTime: String
+    + overLapsWith(anotherTimeSlot: TimeSlot): Boolean
+}
+
+class RegistrationRecord <<Value Object>> {
+    + courseGroupId: Long
+    + status: RegistrationStatus
+}
+
+class Course {
+    - title: String
+    - prerequisites: List<Long>
+    + title(): String
+    + prerequisites(): List<Long>
+}
+
+class Student {
+    - studentNumber: String
+    - name: String
+    - passedCourses: List<Long>
+    - registrations: List<RegistrationRecord>
+    + name(): String
+    + hasPassed(courseId: Long): Boolean
+    + changeRegistrationStatus(groupId: Long, newStatus: RegistrationStatus)
+    + removeRegistration(groupId: Long)
+    + getRegisteredGroupIds(): List<Long>
+}
+
+class CourseGroup {
+    - courseId: Long
+    - capacity: Int
+    - professorName: String
+    - classTime: TimeSlot
+    - examTime: TimeSlot
+    - registeredStudents: List<Long>
+    - waitlist: ArrayDeque<Long>
+    + capacity(): Int
+    + professorName(): String
+    + courseId(): Long
+    + classTime(): TimeSlot
+    + examTime(): TimeSlot
+    + availableSeats(): Int
+    + isFull(): Boolean
+    + enroll(studentId: Long)
+    + unenroll(studentId: Long)
+    + addToWaitlist(studentId: Long)
+    + removeFromWaitlist(studentId: Long)
+    + getNextInWaitlist(): Long
+}
+
+Entity <|-- Course
+Entity <|-- Student
+Entity <|-- CourseGroup
+
+Student "*" *-- "1" RegistrationRecord
+CourseGroup "1" *-- "2" TimeSlot
+RegistrationRecord --> RegistrationStatus
+TimeSlot --> WeekDays
+
+interface RegistrationRequirement {
+    + isSatisfiedBy(student: Student, group: CourseGroup, course: Course, allGroups: List<CourseGroup>): Boolean
+}
+
+class PrerequisitesMetRequirement
+class CourseNotPreviouslyPassedRequirement
+class NoDuplicateGroupRequirement
+class NoTimeConflictRequirement
+
+RegistrationRequirement <|.. PrerequisitesMetRequirement
+RegistrationRequirement <|.. CourseNotPreviouslyPassedRequirement
+RegistrationRequirement <|.. NoDuplicateGroupRequirement
+RegistrationRequirement <|.. NoTimeConflictRequirement
+
+RegistrationRequirement ..> Student : analyzes
+RegistrationRequirement ..> CourseGroup : analyzes
+RegistrationRequirement ..> Course : analyzes
+
+@enduml
